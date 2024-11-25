@@ -6,6 +6,7 @@ def fetch_page(url):
     try:
         response = requests.get(url)
         response.raise_for_status()
+        return response.text
     except requests.exceptions as e:
         print(f"Error al acceder a {url}: {e}")
         return None
@@ -21,4 +22,8 @@ def parse_page(html):
 
     return links
 
+def save_html(content, filename):
+    """Save the HTML content to a file."""
 
+    with open(filename, "w", encoding='utf-8') as f:
+        f.write(content)
