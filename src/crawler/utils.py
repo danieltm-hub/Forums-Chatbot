@@ -5,6 +5,8 @@ patterns = {
     "https://us.forums.blizzard.com/en/wow/t/": "topic",
 }
 
+http_pattern = "https://"
+
 class ForumPage:
     def __init__(self, url, main_class = None, sub_class = None):
         self.url = url
@@ -29,3 +31,9 @@ class ForumPage:
     
     def is_category(self):
         return self.type == "category"
+    
+    def is_just_category(self):
+        return self.type == "category" and self.url.split("/") == 8
+    
+def is_absolute_path(url:str):
+    return re.match(http_pattern, url)
