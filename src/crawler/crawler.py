@@ -53,7 +53,6 @@ def save_html(content:str, page:ForumPage):
     folder = f"./data/{page.main_class}/{page.sub_class}/"
     filename = "_".join(page.url.split("/")[-2:])
 
-    with open(folder + filename, "w", encoding='utf-8') as f:
     full_filename = folder + filename
     
     os.makedirs(os.path.dirname(full_filename), exist_ok=True)
