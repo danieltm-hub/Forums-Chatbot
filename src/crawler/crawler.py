@@ -1,5 +1,5 @@
 import requests
-
+import os
 from queue import Queue
 from bs4 import BeautifulSoup
 
@@ -54,6 +54,11 @@ def save_html(content:str, page:ForumPage):
     filename = "_".join(page.url.split("/")[-2:])
 
     with open(folder + filename, "w", encoding='utf-8') as f:
+    full_filename = folder + filename
+    
+    os.makedirs(os.path.dirname(full_filename), exist_ok=True)
+    
+    with open(full_filename, "w", encoding='utf-8') as f:
         f.write(content)
 
 def download_web_page(page:ForumPage, visited_urls:set) -> list[ForumPage]:
