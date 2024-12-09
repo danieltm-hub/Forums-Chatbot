@@ -1,5 +1,6 @@
 import requests
 import os
+import time
 from queue import Queue
 from bs4 import BeautifulSoup
 
@@ -7,15 +8,23 @@ from src.crawler.utils import ForumPage, is_absolute_path
 
 base_url = "https://us.forums.blizzard.com"
 
-def fetch_page(url:str) -> str | None:
+def fetch_page(url:str, retries:int = 5, backoff_factor:float = 0.3) -> str | None:
 
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        return response.text
-    except requests.exceptions.RequestException as e:
-        print(f"Error al acceder a {url}: {e}")
-        return None
+    for i in range(retries):
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.text
+        except requests.exceptions.RequestException as e:
+            if response.status_code == 429:
+                wait_time = backoff_factor * 2 ** (i)
+                print(f"Too many requests. Retrying in {wait_time} seconds")
+                time.sleep(wait_time)
+            else:
+                break
+            
+    print(f"Error al acceder a {url}: {e}")
+    return None
     
 def parse_page(html:str, page:ForumPage, visited_urls:set) -> list[ForumPage]:
   
